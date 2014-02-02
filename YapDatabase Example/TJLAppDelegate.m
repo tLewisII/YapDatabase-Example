@@ -32,10 +32,15 @@ NSString *const TJLTableViewCollectionName = @"TableViewModelCollection";
     YapDatabaseConnection *connection = [self.database newConnection];
 
     [connection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-        [transaction removeAllObjectsInAllCollections];
+        [transaction removeAllObjectsInAllCollections]; ///Remove everything each time we write, as this is just an example
         for(NSInteger i = 0; i < 20; i++) {
-            TJLTestModel *model = [[TJLTestModel alloc]initWithName:[NSString stringWithFormat:@"joe%u", arc4random_uniform(100)] subtitle:[NSString stringWithFormat:@"bob%u", arc4random_uniform(100)]];
-            [transaction setObject:model forKey:[NSString stringWithFormat:@"%u", i] inCollection:TJLTableViewCollectionName];
+            TJLTestModel *model = [[TJLTestModel alloc]
+                    initWithName:[NSString stringWithFormat:@"joe%u", arc4random_uniform(100)]
+                        subtitle:[NSString stringWithFormat:@"bob%u", arc4random_uniform(100)]];
+            [transaction
+                    setObject:model
+                       forKey:[NSString stringWithFormat:@"%u", i]
+                 inCollection:TJLTableViewCollectionName];
         }
     }];
 
