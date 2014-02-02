@@ -9,6 +9,7 @@
 #import "TJLViewController.h"
 
 @interface TJLViewController ()
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end
 
