@@ -7,24 +7,54 @@
 //
 
 #import "TJLViewController.h"
+#import "TJLAppDelegate.h"
+#import "TJLTestModel.h"
+#import <YapDatabase/YapDatabase.h>
+#import <YapDatabase/YapDatabaseView.h>
 
-@interface TJLViewController ()
+@interface TJLViewController () <UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-
+@property(strong, nonatomic) YapDatabaseConnection *connection;
+@property(strong, nonatomic) YapDatabaseViewMappings *mappings;
 @end
 
 @implementation TJLViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    TJLAppDelegate *delegate = (TJLAppDelegate *)[UIApplication sharedApplication].delegate;
+    self.tableView.dataSource = self;
+    
+    self.connection = [delegate.database newConnection];
+    
+    [self.connection beginLongLivedReadTransaction];
+    self.mappings = [[YapDatabaseViewMappings alloc]initWithGroups:@[@"name"] view:TJLTableViewViewName];
+    
+    [self.connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+        [self.mappings updateWithTransaction:transaction];
+    }];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    NSInteger rows = [self.mappings numberOfItemsInSection:section];
+    return rows;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    NSInteger sections = self.mappings.numberOfSections;
+    return sections;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CELL" forIndexPath:indexPath];
+    __block TJLTestModel *model;
+    NSString *group = [self.mappings groupForSection:indexPath.section];
+    [self.connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+        model = [[transaction ext:TJLTableViewViewName]objectAtIndex:indexPath.row inGroup:group];
+    }];
+    cell.textLabel.text = model.name;
+    cell.detailTextLabel.text = model.subtitle;
+    return cell;
 }
 
 @end
