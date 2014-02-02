@@ -1,0 +1,18 @@
+PODS:
+  - CocoaLumberjack (1.6.5.1):
+    - CocoaLumberjack/Core
+    - CocoaLumberjack/Extensions
+  - CocoaLumberjack/Core (1.6.5.1)
+  - CocoaLumberjack/Extensions (1.6.5.1):
+    - CocoaLumberjack/Core
+  - YapDatabase (2.3):
+    - CocoaLumberjack (~> 1.6.3)
+
+DEPENDENCIES:
+  - YapDatabase (~> 2.3)
+
+SPEC CHECKSUMS:
+  CocoaLumberjack: 17803afbade3126a377d32b8d23367264b44ced6
+  YapDatabase: b9b58b24092557adc59e3b86a167601c7733b8e7
+
+COCOAPODS: 0.29.0
