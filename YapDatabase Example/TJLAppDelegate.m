@@ -21,7 +21,7 @@ NSString *const TJLTableViewCollectionName = @"TableViewModelCollection";
     dispatch_once(&onceToken, ^{
         _sharedYapDatabase = [[YapDatabase alloc]initWithPath:self.filePath];
     });
-    
+
     return _sharedYapDatabase;
 }
 
@@ -30,7 +30,7 @@ NSString *const TJLTableViewCollectionName = @"TableViewModelCollection";
     self.databaseView = [self setupDatabaseView];
     [self.database registerExtension:self.databaseView withName:TJLTableViewViewName];
     YapDatabaseConnection *connection = [self.database newConnection];
-    
+
     [connection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         [transaction removeAllObjectsInAllCollections];
         for(NSInteger i = 0; i < 20; i++) {
@@ -38,7 +38,7 @@ NSString *const TJLTableViewCollectionName = @"TableViewModelCollection";
             [transaction setObject:model forKey:[NSString stringWithFormat:@"%u", i] inCollection:TJLTableViewCollectionName];
         }
     }];
-    
+
     return YES;
 }
 
@@ -73,26 +73,26 @@ NSString *const TJLTableViewCollectionName = @"TableViewModelCollection";
 - (YapDatabaseView *)setupDatabaseView {
     YapDatabaseViewBlockType groupingBlockType;
     YapDatabaseViewGroupingWithObjectBlock groupingBlock;
-    
+
     YapDatabaseViewBlockType sortingBlockType;
     YapDatabaseViewSortingWithObjectBlock sortingBlock;
-    
+
     groupingBlockType = YapDatabaseViewBlockTypeWithObject;
     groupingBlock = ^NSString *(NSString *collection, NSString *key, id object) {
         return @"name";
     };
-    
+
     sortingBlockType = YapDatabaseViewBlockTypeWithObject;
     sortingBlock = ^(NSString *group, NSString *collection1, NSString *key1, TJLTestModel *obj1,
-                     NSString *collection2, NSString *key2, TJLTestModel *obj2) {
-        return [[obj1 name]compare:[obj2 name] options:NSNumericSearch range:NSMakeRange(0, obj1.name.length)];
+            NSString *collection2, NSString *key2, TJLTestModel *obj2) {
+        return [obj1.name compare:obj2.name options:NSNumericSearch range:NSMakeRange(0, obj1.name.length)];
     };
-    
+
     YapDatabaseView *databaseView =
-    [[YapDatabaseView alloc]initWithGroupingBlock:groupingBlock
-                                groupingBlockType:groupingBlockType
-                                     sortingBlock:sortingBlock
-                                 sortingBlockType:sortingBlockType];
+            [[YapDatabaseView alloc]initWithGroupingBlock:groupingBlock
+                                        groupingBlockType:groupingBlockType
+                                             sortingBlock:sortingBlock
+                                         sortingBlockType:sortingBlockType];
     return databaseView;
 }
 

@@ -13,7 +13,7 @@
 #import <YapDatabase/YapDatabaseView.h>
 
 @interface TJLViewController () <UITableViewDataSource>
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property(weak, nonatomic) IBOutlet UITableView *tableView;
 @property(strong, nonatomic) YapDatabaseConnection *connection;
 @property(strong, nonatomic) YapDatabaseViewMappings *mappings;
 @end
@@ -22,27 +22,26 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = @"YapDatabase Example";
     TJLAppDelegate *delegate = (TJLAppDelegate *)[UIApplication sharedApplication].delegate;
     self.tableView.dataSource = self;
-    
+
     self.connection = [delegate.database newConnection];
-    
+
     [self.connection beginLongLivedReadTransaction];
     self.mappings = [[YapDatabaseViewMappings alloc]initWithGroups:@[@"name"] view:TJLTableViewViewName];
-    
+
     [self.connection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         [self.mappings updateWithTransaction:transaction];
     }];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSInteger rows = [self.mappings numberOfItemsInSection:section];
-    return rows;
+    return [self.mappings numberOfItemsInSection:section];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    NSInteger sections = self.mappings.numberOfSections;
-    return sections;
+    return self.mappings.numberOfSections;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

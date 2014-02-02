@@ -14,10 +14,10 @@
     if(!self) {
         return nil;
     }
-    
+
     _name = name;
     _subtitle = subtitle;
-    
+
     return self;
 }
 
@@ -33,8 +33,8 @@
     }
     self.name = [aDecoder decodeObjectForKey:@"name"];
     self.subtitle = [aDecoder decodeObjectForKey:@"subtitle"];
-    
-    
+
+
     return self;
 }
 @end
